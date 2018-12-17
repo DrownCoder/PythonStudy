@@ -1,19 +1,24 @@
+# -*- coding: UTF-8 -*-
 import os
 
 print("输入排除的分支名：（【空格隔开】默认排除mastar和remote）")
 exceptBranch = input()
-exceptBranchs = exceptBranch.split(" ")
-exceptBranchs.append("master")
+exceptBranchs = []
+if len(str(exceptBranch).strip()) > 0:
+    exceptBranchs = exceptBranch.split(" ")
 
 
 # 判断是否需要排除这个分支
 def showExcept(branchTemp):
     if "remotes" in branchTemp:
         return True
+    elif "master" == str(branchTemp).strip():
+        return True
     else:
-        for exceptItem in exceptBranchs:
-            if exceptItem in branchTemp:
-                return True
+        if len(exceptBranchs) > 0:
+            for exceptItem in exceptBranchs:
+                if exceptItem in branchTemp:
+                    return True
     return False
     pass
 
@@ -24,9 +29,11 @@ def deleteBranch():
     branchs = branchSource.split("\n")
     for branch in branchs:
         if not showExcept(branch):
-            os.popen("git branch -d" + branch)
+            print("git branch -d" + branch)
+            os.popen("git branch -D " + str(branch).strip())
 
 
+deleteBranch()
 path = os.popen("ls").read()
 projectPaths = path.split("\n")
 for project in projectPaths:
